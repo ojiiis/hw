@@ -5,39 +5,12 @@ import {Loading} from '../res/loading';
 const { width, height } = Dimensions.get('window');
 
 
-export function Home(){
-       const [pageNo, setPageNo] = useState(1);
-       const [show,setShow] = useState(true);
+export function Search(){
+    const [key,setKey] = useState('')
+   // const [searchData,setSearchData] = useState([])
+            const scrollViewRef = useRef();
+                   const [show,setShow] = useState(true);
        const [data, setData] = useState([]);
-      useEffect(()=>{
-    async function getSession() {
-    //  const info = await fs.getInfoAsync('./res/session');
-   //   console.log(info)
- //  const session = await fs.readAsStringAsync('./res/session')
-  // console.log(session);
-   try{
-    setGetItem(false);
-    const getGata = await fetch('https://lin.com.ng/h/index.php?novels&page='+pageNo);
-    const homeData = await getGata.json();
-    setData(data => {
-      var nd =    data.concat(homeData)
-return nd.reduce((acc, current) => {
-  const x = acc.find(item => item.title === current.title);
-  if (!x) {
-    acc.push(current);
-  }
-  return acc;
-}, []);
-    });
-    setShow(false);
-    setGetItem(true);
-   }catch(e){
-    //console.log(e)
-   }
-    }
-    getSession();
-  },[pageNo]);
-    const scrollViewRef = useRef();
     const [ModalDisplay,setModalDisplay] = useState(false);
     const [ModalContent,setModalContent] = useState('');
     const [readNovelModalDisplay,setReadNovelModalDisplay]=useState(false);
@@ -49,6 +22,35 @@ return nd.reduce((acc, current) => {
     const [canread,setcanread] = useState(true);
     const [hasPrevious,setHasPrevious] = useState(false);
     const [hasNext,setHasNext] = useState(true);
+      function handleKeyPress({ nativeEvent }) {
+    const pressedKey = nativeEvent.key;
+    
+    // Only capture single letters (ignoring keys like Control, Shift, etc.)
+    if (/^[a-zA-Z ]$/.test(pressedKey)) {
+      setKey((prevKey) => {
+        const updatedKey = prevKey + pressedKey;
+        searchFunc(updatedKey);
+         console.log(updatedKey)
+        return updatedKey;
+       
+      });
+    } else if (pressedKey === 'Backspace') {
+      // Remove the last character if the backspace key is pressed
+      setKey((prevKey) => {
+        const updatedKey = prevKey.slice(0, -1);
+         searchFunc(updatedKey);
+        console.log(updatedKey);
+        return updatedKey;
+      });
+    }
+  }
+   async function searchFunc(updatedKey){
+        const getSearch = await fetch('https://lin.com.ng/h/index.php?search='+updatedKey);
+        const search = await getSearch.json();
+        setData(search);
+    }
+
+
   //  const [chap,setChapter] = useState(1);
   const handleScroll = (event) => {
     // Get the scroll position
@@ -130,18 +132,21 @@ setShow(false);
 setHasNext(true)
 }
     return (
-        // <Text>AA</Text>
-        <>
-        <Loading display={show} />
-        <ScrollView 
-        ref={scrollViewRef} 
-        onScroll={handleScroll} // Attach the onScroll event
-        scrollEventThrottle={16} // Controls how often the scroll event is fired (16ms = 60fps)
-        style={styles.scrollview}
-        >
+      <>
+    <View style={{height:'100%',width:'100%',backgroundColor:'#f9edfa' }}>
+      <View style={{ paddingLeft: 20,paddingRight: 20,marginTop:20,height:'10%',justifyContent:'center' }}>
+        <TextInput
+          placeholder="Search for Novel..."
+          onKeyPress={handleKeyPress}
+          value={key}
+        />
+      </View>
+      <ScrollView
+      style={styles.scrollviewSearch}
+      >
             <View style={styles.home}>
-                {
-                data.map((book,i)=>(
+                { data.length && 
+               data.map((book,i)=>(
                 <Pressable key={book.title} style={styles.homeChild} onPress={()=>showModal(i)}>
                     <View style={{width:"100%",height:"100%"}}>
                         <Img
@@ -154,9 +159,12 @@ setHasNext(true)
                 </Pressable>
                 )) 
                 }
+              
             </View>
-        </ScrollView>
-        {ModalDisplay && 
+      </ScrollView>
+    </View>
+    
+            {ModalDisplay && 
         <View style={styles.modal}>
             <View style={{height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
                 <Pressable onPress={()=>hideModal()}><Image source={require('../assets/back.png') } style={{width:30,height:20,resizeMode:'contain'}}/></Pressable>
@@ -194,10 +202,9 @@ setHasNext(true)
             </View>
         </View>
       }
-        </>
-    );
+    </>
+  );
 }
-
 
 //style
 const styles = StyleSheet.create({
