@@ -23,10 +23,8 @@ export default function App() {
   },[]);
 
 
-    const [session,setSession] = useState(false);
+  const [session,setSession] = useState(false);
   const [page,setPage] = useState(<Home/>);
-  const [loginDisplay,setLoginDisplay] = useState(true);
-  const [regDisplay,setRegDisplay] = useState(false);
   const [currentPage,setCurrentPage] = useState('home');
 
   var currentPageStyle = "#f9edfa";
@@ -38,29 +36,12 @@ export default function App() {
    //console.log(tabs)
 }
 
-function handleRegister(){
-// alert(email)
-// alert(password)
-setRegDisplay(false);
-setSession(true);
-}
-
-
-
-function switchToSignIn(){
-setRegDisplay(false);
-setLoginDisplay(true);
-}
-function switchToSignUp(){
-setLoginDisplay(false);
-setRegDisplay(true);
-}
 
 
 
   return (
     <>
-    <StatusBar barStyle="dark-content" backgroundColor="pink" />
+    <StatusBar barStyle="dark-content" backgroundColor="#e443a3" />
     <SafeAreaView style={styles.container}>
          <View style={styles.body}>{session && page}</View>
             <Login />
@@ -70,27 +51,33 @@ setRegDisplay(true);
       action={(x)=>{
        setPage(x.view)
       }}
+      activeBackground=""
+      activeForground="#ff89c6"
       tabs={
           [
           {
               name:'home',
               view:<Home/>,
-              img:require('./assets/home.png')
+              img:require('./assets/home.png'),
+              activeImg:require('./assets/activehome.png')
           },
           {
               name:'search',
               view:<Search/>,
-             img:require('./assets/search.png')
+             img:require('./assets/search.png'),
+             activeImg:require('./assets/activesearch.png')
           },
           {
               name:'profile',
               view:<Profile data={{}}/>,
-             img:require('./assets/user.png')
+             img:require('./assets/user.png'),
+             activeImg:require('./assets/activeuser.png')
           },
           {
               name:'settings',
               view:<Settings/>,
-             img:require('./assets/settings.png')
+             img:require('./assets/settings.png'),
+             activeImg:require('./assets/activesettings.png')
           }
           
           ]
@@ -113,11 +100,11 @@ const styles = StyleSheet.create({
   },
   body:{
     width:"100%",
-    height:height * 0.92,
+    height:height * 0.94,
     backgroundColor:'#f9edfa',
     overflowY:"auto"
   },
-  footer:{width:"100%",height:height * 0.08,backgroundColor:"#ce198e",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center"},
+  footer:{width:"100%",height:height * 0.06,backgroundColor:"#ce198e",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center"},
   fbtn:{
     width:"20%",
     height:"90%",

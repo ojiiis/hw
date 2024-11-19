@@ -1,16 +1,41 @@
    
    import {Dimensions,Platform,StyleSheet,Pressable,KeyboardAvoidingView,View,Text,TextInput,Image,ScrollView} from 'react-native';
    import {useState,useEffect} from 'react';
+   import * as fs from 'expo-file-system';
    const { width, height } = Dimensions.get('window');
    
-   export function Login(){
-    const [email,setEmail] = useState('');
+export function Login(){
+  const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [fullname,setFullname] = useState('');
+  const [loginDisplay,setLoginDisplay] = useState(true);
+  const [regDisplay,setRegDisplay] = useState(false);
+  const [session,setSession] = useState(false);
+       useEffect(()=>{
+    async function getSession() {
+     // const info = await fs.getInfoAsync(`${fs.documentDirectory}session.json`);
+    //  console.log(info,' working');
+     // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
+     //console.log(fs.documentDirectory)
+     const ses = await fs.readAsStringAsync(`${fs.documentDirectory}session.json`)
+     setSession(ses);
+      
+    }
+    getSession();
+  },[session]);
   function handleLogin(){
 setLoginDisplay(false);
 setSession(true);
 }
+
+function handleRegister(){
+// alert(email)
+// alert(password)
+setRegDisplay(false);
+setSession(true);
+}
+
+
 
 function switchToSignIn(){
 setRegDisplay(false);
@@ -20,8 +45,9 @@ function switchToSignUp(){
 setLoginDisplay(false);
 setRegDisplay(true);
 }
+
     return (
-        <KeyboardAvoidingView 
+  <KeyboardAvoidingView 
           style={{flex:1,width:'100%',height:height,position:'absolute',marginTop:0}}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
@@ -30,7 +56,9 @@ setRegDisplay(true);
     justifyContent: 'center',
     alignItems: 'center',
   }}>
-        <View style={styles.formHeader}>
+          {
+           loginDisplay && <>
+            <View style={styles.formHeader}>
             
               <Image 
               source={require('../assets/hw.png')}
@@ -70,6 +98,62 @@ setRegDisplay(true);
             </Pressable>
             </View>
 
+            </>
+          }
+          
+          {
+            regDisplay && 
+            <>
+                      <View style={styles.formHeader}>
+              <Image 
+              source={require('../assets/hw.png')}
+              style={{width:100,height:50,resizeMode:'contain'}}
+              />
+          </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Fullname</Text>
+          <TextInput
+              styles={[styles.input,{borderColor:"black"}]}
+              placeholder="Enter your fullname"
+              value={fullname}
+              inputMode="text"
+              onChangeText={setFullname}
+          />
+          </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Email address</Text>
+          <TextInput
+              styles={[styles.input,{borderColor:"black"}]}
+              placeholder="Enter your email"
+              value={email}
+              inputMode="email-address"
+              onChangeText={setEmail}
+          />
+          </View>
+          <View style={styles.formGroup}>
+              <Text style={styles.label}>Password</Text>
+            <TextInput
+                styles={styles.input}
+                placeholder="Enter your password"
+                value={password}
+                inputMode="email-address"
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+            </View>
+            <View style={styles.formGroup}>
+              <Pressable title="Login" onPress={handleRegister} style={styles.btn}>
+                <Text style={{color:"white"}}>Register</Text>
+              </Pressable>
+            </View>
+            <View style={styles.formGroup}>
+            <Text style={{marginBottom:5}}>Already have an account?</Text>
+            <Pressable title="Login" onPress={switchToSignIn} style={styles.btn}>
+                <Text style={{color:"white"}}>Sign in</Text>
+            </Pressable>
+            </View>
+            </>
+          }
       </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -165,14 +249,16 @@ const styles = StyleSheet.create({
      marginTop:3
   },
   input:{
-    borderWidth: Platform.OS === 'ios' ? 2 : 3, // Adjust for platform-specific behavior
-    borderColor: 'blue',
+   // borderWidth: Platform.OS === 'ios' ? 2 : 3, // Adjust for platform-specific behavior
     padding: 12,
     width:"80%",
-    backgroundColor:'#f9edfa'
+    backgroundColor:'#f9edfa',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5
   },
   formGroup:{
-    width:'100%',
+    width:'90%',
     paddingLeft:10,
     paddingRight:10,
     marginBottom:20
