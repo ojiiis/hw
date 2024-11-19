@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, Text, TextInput, View ,Platform,SafeAreaView,StatusBar,Dimensions,Image,ScrollView} from 'react-native';
+import { Pressable, StyleSheet,KeyboardAvoidingView, Text, TextInput, View ,Platform,SafeAreaView,StatusBar,Dimensions,Image,ScrollView} from 'react-native';
 const { width, height } = Dimensions.get('window');
 import {NavBar} from './res/navbar';
 import {Home} from './pages/home';
 import {Search} from './pages/search';
 import {Profile} from './pages/profile';
 import {Settings} from './pages/settings';
+import {Login} from './pages/login';
 import * as fs from 'expo-file-system';
 import { useState,useEffect } from 'react';
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
      // const info = await fs.getInfoAsync(`${fs.documentDirectory}session.json`);
     //  console.log(info,' working');
      // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
-     console.log(fs.documentDirectory)
+     //console.log(fs.documentDirectory)
      const session = await fs.readAsStringAsync(`${fs.documentDirectory}session.json`)
       //console.log(session,'hmm');
     }
@@ -26,9 +27,6 @@ export default function App() {
   const [page,setPage] = useState(<Home/>);
   const [loginDisplay,setLoginDisplay] = useState(true);
   const [regDisplay,setRegDisplay] = useState(false);
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [fullname,setFullname] = useState('');
   const [currentPage,setCurrentPage] = useState('home');
 
   var currentPageStyle = "#f9edfa";
@@ -39,10 +37,7 @@ export default function App() {
    console.log(y)
    //console.log(tabs)
 }
-function handleLogin(){
-setLoginDisplay(false);
-setSession(true);
-}
+
 function handleRegister(){
 // alert(email)
 // alert(password)
@@ -67,10 +62,10 @@ setRegDisplay(true);
     <>
     <StatusBar barStyle="dark-content" backgroundColor="pink" />
     <SafeAreaView style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      
-      
-      
+         <View style={styles.body}>{session && page}</View>
+            <Login />
+          
+   
        <NavBar
       action={(x)=>{
        setPage(x.view)
@@ -101,26 +96,7 @@ setRegDisplay(true);
           ]
       }
       style={styles.footer}
-      /*style={{width:'100%',
-        height:'10%',
-        flexDirection:'row',
-        justifyContent:'space-around',
-        alignItems:'center',
-        backgroundColor:'orange'}}
-        */
       />
-      
-      
-      
-      
-    {/*
-    <View style={styles.footer}> 
-<Pressable onPress={()=>c(<Home/>,'home')} style={[styles.fbtn,{backgroundColor:tabs.home}]}><Image source={require('./assets/home.png') } style={{width:"100%",height:"70%",resizeMode:'contain'}}/></Pressable>
-<Pressable onPress={()=>c(<Search/>,'search')} style={[styles.fbtn,{backgroundColor:tabs.search}]}><Image source={require('./assets/search.png') } style={{width:"100%",height:"70%",resizeMode:'contain'}}/></Pressable>
-<Pressable onPress={()=>c(<Profile data={{}}/>,'profile')} style={[styles.fbtn,{backgroundColor:tabs.profile}]}><Image source={require('./assets/user.png') } style={{width:"100%",height:"70%",resizeMode:'contain'}}/></Pressable> 
-<Pressable onPress={()=>c(<Settings/>,'settings')} style={[styles.fbtn,{backgroundColor:tabs.settings}]}><Image source={require('./assets/settings.png') } style={{width:"100%",height:"70%",resizeMode:'contain'}}/></Pressable>
-      </View>
-      */}
     </SafeAreaView>
     </>
     
@@ -133,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9edfa',
     alignItems: 'center',
     justifyContent: 'center',
-    
+    position:'relative'
   },
   body:{
     width:"100%",
@@ -153,30 +129,6 @@ const styles = StyleSheet.create({
     width:"100%",
     height:50,
     alignItems:"center"
-  },
-  login:{
-    width:"100%",
-    height:"100%",
-    backgroundColor:'#f9edfa',
-    position:"fixed",
-    marginTop:'0',
-    justifyContent:"center",
-    padding:16,
-    display:"flex"
-  },
-  label:{
-     marginTop:3
-  },
-  input:{
-    borderWidth: Platform.OS === 'ios' ? 2 : 3, // Adjust for platform-specific behavior
-    borderColor: 'blue',
-    padding: 12,
-    width:"80%",
-    backgroundColor:'#f9edfa'
-  },
-  formGroup:{
-    marginBottom:20
-  },
-  btn:{backgroundColor:'#e443a3',borderRadius:5,width:"100%",height:35,justifyContent:"center",alignItems:"center"}
+  }
 });
 

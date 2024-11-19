@@ -30,7 +30,7 @@ export function Search(){
       setKey((prevKey) => {
         const updatedKey = prevKey + pressedKey;
         searchFunc(updatedKey);
-         console.log(updatedKey)
+         //console.log(updatedKey)
         return updatedKey;
        
       });
@@ -145,7 +145,7 @@ setHasNext(true)
       style={styles.scrollviewSearch}
       >
             <View style={styles.home}>
-                { data.length && 
+                { data.length > 0 && 
                data.map((book,i)=>(
                 <Pressable key={book.title} style={styles.homeChild} onPress={()=>showModal(i)}>
                     <View style={{width:"100%",height:"100%"}}>
