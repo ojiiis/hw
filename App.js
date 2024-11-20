@@ -6,6 +6,8 @@ import {Search} from './pages/search';
 import {Profile} from './pages/profile';
 import {Settings} from './pages/settings';
 import {Login} from './pages/login';
+import {SearchPage} from './pages/t';
+
 import * as fs from 'expo-file-system';
 import { useState,useEffect } from 'react';
 export default function App() {
@@ -32,7 +34,7 @@ export default function App() {
     setPage(x);
 //console.log(y)
     updateSelectedTab(y);
-   console.log(y)
+   //console.log(y)
    //console.log(tabs)
 }
 

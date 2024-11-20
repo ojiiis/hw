@@ -9,7 +9,7 @@ const [main,setMain] = useState(active);
     useEffect(()=>{
  if(active !== ""){
          for(i in tabs){
-             console.log(tabs[i]);
+             //console.log(tabs[i]);
              if(tabs[i].name==active){
                  setActive(tabs[i]);
                  

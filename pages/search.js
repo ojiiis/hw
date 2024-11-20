@@ -39,7 +39,7 @@ export function Search(){
       setKey((prevKey) => {
         const updatedKey = prevKey.slice(0, -1);
          searchFunc(updatedKey);
-        console.log(updatedKey);
+       // console.log(updatedKey);
         return updatedKey;
       });
     }
@@ -133,28 +133,28 @@ setHasNext(true)
 }
     return (
       <>
-    <KeyboardAvoidingView style={{height:'100%',width:'100%',backgroundColor:'#f9edfa' }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <KeyboardAvoidingView style={{flex:1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
     
-      <View style={{height:'5%',width:'100%',justifyContent:'center' }}
-
-       >
-      
-      
-       <TextInput
+    <ScrollView
+      style={[styles.scrollviewSearch,{width:'100%',backgroundColor:'green'}]}
+      contentContainerStyle={{flexGrow:1,justifyContent:'flex-start',padding:20}}
+      >
+        <TextInput
           placeholder="Search for Novel..."
           onKeyPress={handleKeyPress}
           value={key}
           style={{
-              width:'90%'
+              width:'90%',
+              padding:5,
+              borderWidth:1,
+              borderColor:'pink',
+              borderRadius:10
           }}
         />
-      </View>
-      <ScrollView
-      style={styles.scrollviewSearch}
-      keyboardShouldPersistTaps="handled"
-      >
+   
+   
             <View style={styles.home}>
                 { data.length > 0 && 
                data.map((book,i)=>(
@@ -219,13 +219,12 @@ setHasNext(true)
 
 //style
 const styles = StyleSheet.create({
-  scrollview:{
-   height:"95%"
-  },
     scrollviewSearch:{
-   height:"95%"
+   height:"95%",
+   position:'absolute',marginBottom:0
   },
    home:{
+    flex:1,
     flexDirection:"row",
     flexWrap:"wrap",
     justifyContent:"space-evenly"

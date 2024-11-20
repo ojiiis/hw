@@ -1,48 +1,93 @@
-import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions} from 'react-native';
-import {useState,useRef,useEffect} from 'react';
-import {Img} from '../res/img';
-import {Loading} from '../res/loading';
-const { width, height } = Dimensions.get('window');
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Keyboard,
+  Dimensions,
+  Platform,
+} from 'react-native';
 
+export const Settings = () => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
-export function Settings(){
-return (
-    <>
-    <Text>Hello world</Text>
-    </>
-)
-}
-//style
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+        setScreenHeight(Dimensions.get('window').height - event.endCoordinates.height);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+        setScreenHeight(Dimensions.get('window').height);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  return (
+   //  <View style={styles.container}>
+   //    <TextInput style={styles.searchInput} placeholder="Search..." />
+   //    <View
+   //      style={[
+   //        styles.resultsContainer,
+   //        { height: screenHeight - 100 }, // Adjust dynamically
+   //      ]}
+   //    >
+   //      <Text style={styles.resultText}>
+   //        Keyboard Height: {keyboardHeight} px{'\n'}
+   //        Available Screen Height: {screenHeight} px
+   //      </Text>
+   //    </View>
+   //  </View>
+   <View style={{width:'100%',height:screenHeight,position:'relative',justifyContent:'flex-start'}}>
+        <View style={{height:screenHeight,position:'absolute',marginBottom:-3000}}>
+            <View style={{height:'50%',backgroundColor:'green'}}>
+            <TextInput 
+            placeholder="Testing"
+            />
+            </View>
+         <View style={{height:'50%',backgroundColor:'orange'}}></View>
+        </View>
+   </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  scrollview:{
-   height:"95%"
+  container: {
+    flex: 1,
+    backgroundColor: '#f48fb1',
+    padding: 20,
   },
-    scrollviewSearch:{
-   height:"90%"
+  searchInput: {
+    height: 40,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
   },
-   home:{
-    flexDirection:"row",
-    flexWrap:"wrap",
-    justifyContent:"space-evenly"
-   },
-   homeChild:{
-    width:"48%",
-    height:height * 0.40,
-    flexShrink:1,
-    backgroundColor:"#e443a3",
-    marginBottom:"2%"
-   },
-   bookImg:{width: "100%",height: "80%", resizeMode: 'cover'},
-   bookTitle:{
-padding:6,
-fontSize:width * 0.04,
-color:'#303030'
-   },
-   modal:{
-    width:"100%",
-    height:"100%",
-    backgroundColor:"#f9edfa",
-   },
-   navigation:{height:"6%",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center",padding:5},
-   navigationBtn:{paddingLeft:10,paddingRight:10,backgroundColor:'green',borderRadius:2,height:"100%",justifyContent:'center'}
+  resultsContainer: {
+    backgroundColor: '#f48fb1',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultText: {
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
+  },
 });
+
+
