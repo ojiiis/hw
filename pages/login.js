@@ -1,10 +1,9 @@
-   
-   import {Dimensions,Platform,StyleSheet,Pressable,KeyboardAvoidingView,View,Text,TextInput,Image,ScrollView} from 'react-native';
+import {Dimensions,Platform,StyleSheet,Pressable,KeyboardAvoidingView,View,Text,TextInput,Image,ScrollView} from 'react-native';
    import {useState,useEffect} from 'react';
    import * as fs from 'expo-file-system';
    const { width, height } = Dimensions.get('window');
    
-export function Login(){
+export function Login({onAuth}){
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [fullname,setFullname] = useState('');
@@ -17,29 +16,36 @@ export function Login(){
     //  console.log(info,' working');
      // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
      //console.log(fs.documentDirectory)
-     const ses = await fs.readAsStringAsync(`${fs.documentDirectory}session.json`)
+     const ses = await fs.readAsStringAsync(`${fs.documentDirectory}session`)
      setSession(ses);
       
     }
     getSession();
   },[session]);
   function handleLogin(){
+      console.log(email)
+console.log(password)
 setLoginDisplay(false);
 setSession(true);
+onAuth("id");
 }
 
 function handleRegister(){
-// alert(email)
-// alert(password)
+ console.log(email)
+console.log(password)
+console.log(fullname)
 setRegDisplay(false);
 setSession(true);
+onAuth("id");
 }
 
 
 
 function switchToSignIn(){
+
 setRegDisplay(false);
 setLoginDisplay(true);
+onAuth("id");
 }
 function switchToSignUp(){
 setLoginDisplay(false);

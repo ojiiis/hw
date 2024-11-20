@@ -1,16 +1,29 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import {StyleSheet,Pressable, View, Text,Dimensions,Image} from 'react-native'
 const {width,height} = Dimensions.get('window');
 var tabLenght = 0;
-export function NavBar({tabs,active="",style,action = null,activeBackground = 'green',activeForground='green'}){
-    tabLenght = tabs.length;
+export function NavBar({tabs,active="",style =null,action,activeBackground = 'green',activeForground='green'}){
+    
 const [main,setMain] = useState(active);
-    function setActive(tab){
+    
+    useEffect(()=>{
+ if(active !== ""){
+         for(i in tabs){
+             console.log(tabs[i]);
+             if(tabs[i].name==active){
+                 setActive(tabs[i]);
+                 
+             }
+         }
+        
+    }
+    },[active]);
+var tabLenght = tabs.length;    
+   function setActive(tab){
         setMain(tab.name)
         if(typeof action == "function"){ action(tab)
         }
     }
-    
     var ew = (width/tabLenght) - 10
     return (
     <View style={style}>

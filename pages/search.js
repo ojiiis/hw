@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions} from 'react-native';
+import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions,KeyboardAvoidingView,Platform} from 'react-native';
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
@@ -133,16 +133,27 @@ setHasNext(true)
 }
     return (
       <>
-    <View style={{height:'100%',width:'100%',backgroundColor:'#f9edfa' }}>
-      <View style={{ paddingLeft: 20,paddingRight: 20,marginTop:20,height:'10%',justifyContent:'center' }}>
-        <TextInput
+    <KeyboardAvoidingView style={{height:'100%',width:'100%',backgroundColor:'#f9edfa' }}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+    
+      <View style={{height:'5%',width:'100%',justifyContent:'center' }}
+
+       >
+      
+      
+       <TextInput
           placeholder="Search for Novel..."
           onKeyPress={handleKeyPress}
           value={key}
+          style={{
+              width:'90%'
+          }}
         />
       </View>
       <ScrollView
       style={styles.scrollviewSearch}
+      keyboardShouldPersistTaps="handled"
       >
             <View style={styles.home}>
                 { data.length > 0 && 
@@ -162,7 +173,7 @@ setHasNext(true)
               
             </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
     
             {ModalDisplay && 
         <View style={styles.modal}>
@@ -212,7 +223,7 @@ const styles = StyleSheet.create({
    height:"95%"
   },
     scrollviewSearch:{
-   height:"90%"
+   height:"95%"
   },
    home:{
     flexDirection:"row",

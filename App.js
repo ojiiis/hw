@@ -16,7 +16,7 @@ export default function App() {
     //  console.log(info,' working');
      // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
      //console.log(fs.documentDirectory)
-     const session = await fs.readAsStringAsync(`${fs.documentDirectory}session.json`)
+     const ses_id = await fs.readAsStringAsync(`${fs.documentDirectory}`)
       //console.log(session,'hmm');
     }
     getSession();
@@ -25,8 +25,8 @@ export default function App() {
 
   const [session,setSession] = useState(false);
   const [page,setPage] = useState(<Home/>);
+  const [active,setActive] = useState("");
   const [currentPage,setCurrentPage] = useState('home');
-
   var currentPageStyle = "#f9edfa";
   function c(x,y){
     setPage(x);
@@ -36,21 +36,25 @@ export default function App() {
    //console.log(tabs)
 }
 
-
-
+const handleAuth = (id)=>{
+    setSession(id);
+    setActive("home");
+}
 
   return (
     <>
     <StatusBar barStyle="dark-content" backgroundColor="#e443a3" />
     <SafeAreaView style={styles.container}>
          <View style={styles.body}>{session && page}</View>
-            <Login />
+         
+{ !session &&  <Login onAuth={handleAuth}/> }
           
    
        <NavBar
       action={(x)=>{
        setPage(x.view)
       }}
+      active = {active}
       activeBackground=""
       activeForground="#ff89c6"
       tabs={
