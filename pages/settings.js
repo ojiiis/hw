@@ -7,6 +7,7 @@ import {
   Keyboard,
   Dimensions,
   Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 
 export const Settings = () => {
@@ -51,16 +52,19 @@ export const Settings = () => {
    //      </Text>
    //    </View>
    //  </View>
-   <View style={{width:'100%',height:screenHeight,position:'relative',justifyContent:'flex-start'}}>
-        <View style={{height:screenHeight,position:'absolute',marginBottom:-3000}}>
-            <View style={{height:'50%',backgroundColor:'green'}}>
+   <KeyboardAvoidingView style={{width:'100%',height:screenHeight,background:'orange'}}
+     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // Adjust offset for iOS
+   >
+        <View style={{height:screenHeight}}>
+            <View style={{height:'50%',backgroundColor:'pink'}}>
             <TextInput 
-            placeholder="Testing"
+            placeholder="Testing 123"
             />
             </View>
          <View style={{height:'50%',backgroundColor:'orange'}}></View>
         </View>
-   </View>
+   </KeyboardAvoidingView>
   );
 };
 
