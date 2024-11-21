@@ -12,15 +12,29 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "om.exmoj.hw",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["hw"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.exmoj.hw"
+      "package": "com.exmoj.hw",
+          "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "hw"
+          },
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

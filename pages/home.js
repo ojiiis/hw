@@ -11,10 +11,27 @@ export function Home(){
        const [data, setData] = useState([]);
       useEffect(()=>{
     async function getSession() {
-    //  const info = await fs.getInfoAsync('./res/session');
-   //   console.log(info)
- //  const session = await fs.readAsStringAsync('./res/session')
-  // console.log(session);
+
+          const handleDeepLink = (event) => {
+      const url = event.url;
+      if (url) {
+        // Parse the URL and navigate to the correct screen
+        if (url === 'myapp://home') {
+          // Navigate to the home screen or handle your deep link logic
+          Alert.alert('Deep Link', 'Welcome back to your app!');
+        }
+      }
+    };
+
+    Linking.addEventListener('url', handleDeepLink);
+
+    // Check if the app was opened by a deep link when the app starts
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    });
+
    try{
     setGetItem(false);
     const getGata = await fetch('https://lin.com.ng/h/index.php?novels&page='+pageNo);
@@ -26,7 +43,10 @@ return nd.reduce((acc, current) => {
   if (!x) {
     acc.push(current);
   }
-  return acc;
+  return () => {
+      Linking.removeEventListener('url', handleDeepLink);
+      acc;
+    }
 }, []);
     });
     setShow(false);
@@ -133,9 +153,13 @@ setHasNext(true)
 }
 
 async function makePayment(){
+  setShow(true);
   const data = new FormData();
   data.append('amount',1000);
   data.append('email','official.ojingirisamuel@gmail.com');
+  data.append('callback_url','hw://home');
+  
+  
    const req = await fetch(`https://api.paystack.co/transaction/initialize`,{
     method:"POST",
     headers:{
@@ -143,7 +167,7 @@ async function makePayment(){
     },
     body:data
    });
-   const res = await res.json();
+   const res = await req.json();
    console.log(res);
    
    if(Linking.canOpenURL(res.data.authorization_url)){
