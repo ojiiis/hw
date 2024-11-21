@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions} from 'react-native';
+import {Alert,Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions,Linking} from 'react-native';
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
@@ -145,6 +145,12 @@ async function makePayment(){
    });
    const res = await res.json();
    console.log(res);
+   
+   if(Linking.canOpenURL(res.data.authorization_url)){
+    Linking.openURL(res.data.authorization_url)
+   }else{
+Alert.alert("Unable to process your information!");
+   }
 }
     return (
         // <Text>AA</Text>
