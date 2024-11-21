@@ -16,7 +16,7 @@ export function Home(){
       const url = event.url;
       if (url) {
         // Parse the URL and navigate to the correct screen
-        if (url === 'myapp://home') {
+        if (url === 'hw://home') {
           // Navigate to the home screen or handle your deep link logic
           Alert.alert('Deep Link', 'Welcome back to your app!');
         }
@@ -43,10 +43,7 @@ return nd.reduce((acc, current) => {
   if (!x) {
     acc.push(current);
   }
-  return () => {
-      Linking.removeEventListener('url', handleDeepLink);
-      acc;
-    }
+  return  acc;
 }, []);
     });
     setShow(false);
@@ -56,6 +53,10 @@ return nd.reduce((acc, current) => {
    }
     }
     getSession();
+     return () => {
+      Linking.removeEventListener('url', handleDeepLink);
+     
+    }
   },[pageNo]);
     const scrollViewRef = useRef();
     const [ModalDisplay,setModalDisplay] = useState(false);
