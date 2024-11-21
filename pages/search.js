@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions,KeyboardAvoidingView,Platform} from 'react-native';
+import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions,  Keyboard,KeyboardAvoidingView,Platform} from 'react-native';
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
@@ -22,6 +22,34 @@ export function Search(){
     const [canread,setcanread] = useState(true);
     const [hasPrevious,setHasPrevious] = useState(false);
     const [hasNext,setHasNext] = useState(true);
+     const [keyboardHeight, setKeyboardHeight] = useState(0);
+   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+
+     useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+        setScreenHeight(Dimensions.get('window').height - event.endCoordinates.height);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+        setScreenHeight(Dimensions.get('window').height);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+
       function handleKeyPress({ nativeEvent }) {
     const pressedKey = nativeEvent.key;
     
@@ -133,30 +161,23 @@ setHasNext(true)
 }
     return (
       <>
-    <KeyboardAvoidingView style={{flex:1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+       <KeyboardAvoidingView style={{height:screenHeight,paddingTop:(keyboardHeight/2)}}
+     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+   >
     
-    <ScrollView
-      style={[styles.scrollviewSearch,{width:'100%',backgroundColor:'green'}]}
-      contentContainerStyle={{flexGrow:1,justifyContent:'flex-start',padding:20}}
-      >
-        <TextInput
-          placeholder="Search for Novel..."
-          onKeyPress={handleKeyPress}
-          value={key}
-          style={{
-              width:'90%',
-              padding:5,
-              borderWidth:1,
-              borderColor:'pink',
-              borderRadius:10
-          }}
-        />
-   
-   
-            <View style={styles.home}>
-                { data.length > 0 && 
+        <View style={{height:screenHeight}}>
+            <View style={{height:50,flexDirection:'column',justifyContent:'center',paddingLeft:10,paddingRight:10,backgroundColor:''}}>
+            <TextInput 
+            placeholder="Search novel..."
+             onKeyPress={handleKeyPress}
+            value={key}
+            />
+            </View>
+         <View style={{height:screenHeight - 50,backgroundColor:''}}>
+           <ScrollView style={{flex:1}}
+           contentContainerStyle={styles.home}
+           >
+               { data.length > 0 && 
                data.map((book,i)=>(
                 <Pressable key={book.title} style={styles.homeChild} onPress={()=>showModal(i)}>
                     <View style={{width:"100%",height:"100%"}}>
@@ -170,11 +191,10 @@ setHasNext(true)
                 </Pressable>
                 )) 
                 }
-              
-            </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-    
+           </ScrollView>
+         </View>
+        </View>
+   </KeyboardAvoidingView>
             {ModalDisplay && 
         <View style={styles.modal}>
             <View style={{height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
@@ -219,15 +239,13 @@ setHasNext(true)
 
 //style
 const styles = StyleSheet.create({
-    scrollviewSearch:{
-   height:"95%",
-   position:'absolute',marginBottom:0
-  },
+ 
    home:{
     flex:1,
     flexDirection:"row",
     flexWrap:"wrap",
-    justifyContent:"space-evenly"
+    justifyContent:"space-evenly",
+
    },
    homeChild:{
     width:"48%",

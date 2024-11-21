@@ -12,33 +12,38 @@ import * as fs from 'expo-file-system';
 import { useState,useEffect } from 'react';
 export default function App() {
        
-    useEffect(()=>{
-    async function getSession() {
-     // const info = await fs.getInfoAsync(`${fs.documentDirectory}session.json`);
-    //  console.log(info,' working');
-     // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
-     //console.log(fs.documentDirectory)
-     const ses_id = await fs.readAsStringAsync(`${fs.documentDirectory}`)
-      //console.log(session,'hmm');
-    }
-    getSession();
-  },[]);
+
 
 
   const [session,setSession] = useState(false);
   const [page,setPage] = useState(<Home/>);
   const [active,setActive] = useState("");
   const [currentPage,setCurrentPage] = useState('home');
-  var currentPageStyle = "#f9edfa";
+    useEffect(()=>{
+    async function getSession() {
+     // const info = await fs.getInfoAsync(`${fs.documentDirectory}session.json`);
+    //  console.log(info,' working');
+     // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
+     //console.log(fs.documentDirectory)
+     const ses_id = await fs.readAsStringAsync(`${fs.documentDirectory}session`);
+     if(ses_id != ""){
+    setSession(ses_id);
+    setActive("home");
+     }
+      //console.log(session,'hmm');
+    }
+    getSession();
+  },[]);
+
   function c(x,y){
     setPage(x);
-//console.log(y)
     updateSelectedTab(y);
-   //console.log(y)
-   //console.log(tabs)
 }
 
-const handleAuth = (id)=>{
+const handleAuth = async (id)=>{
+   if(id !== ""){
+    await fs.writeAsStringAsync(`${fs.documentDirectory}session`,id);
+   }
     setSession(id);
     setActive("home");
 }

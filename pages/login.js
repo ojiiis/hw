@@ -1,6 +1,7 @@
-import {Dimensions,Platform,StyleSheet,Pressable,KeyboardAvoidingView,View,Text,TextInput,Image,ScrollView} from 'react-native';
+import {Alert,Dimensions,Platform,StyleSheet,Pressable,KeyboardAvoidingView,View,Text,TextInput,Image,ScrollView} from 'react-native';
    import {useState,useEffect} from 'react';
    import * as fs from 'expo-file-system';
+   import { Loading } from '../res/loading';
    const { width, height } = Dimensions.get('window');
    
 export function Login({onAuth}){
@@ -9,7 +10,7 @@ export function Login({onAuth}){
   const [fullname,setFullname] = useState('');
   const [loginDisplay,setLoginDisplay] = useState(true);
   const [regDisplay,setRegDisplay] = useState(false);
-  const [session,setSession] = useState(false);
+    const [loading,setLoading] = useState(false);
        useEffect(()=>{
     async function getSession() {
      // const info = await fs.getInfoAsync(`${fs.documentDirectory}session.json`);
@@ -17,35 +18,43 @@ export function Login({onAuth}){
      // await fs.writeAsStringAsync(`${fs.documentDirectory}session.json`, '{"status":"2"}');
      //console.log(fs.documentDirectory)
      const ses = await fs.readAsStringAsync(`${fs.documentDirectory}session`)
-     setSession(ses);
-      
+     onAuth(ses);
     }
     getSession();
-  },[session]);
-  function handleLogin(){
-      console.log(email)
-console.log(password)
+  },[]);
+ async function  handleLogin(){
+ setLoading(true);
+const req = await fetch(`https://lin.com.ng/h/?login&email=${email}&password=${password}`);
+const res = await req.json();
+
+if(res.status){
 setLoginDisplay(false);
-setSession(true);
-onAuth("id");
+onAuth(res.data.user_id);
+}else{
+   Alert.alert("Invalid Login");
+  setLoading(false);
 }
 
-function handleRegister(){
- console.log(email)
-console.log(password)
-console.log(fullname)
-setRegDisplay(false);
-setSession(true);
-onAuth("id");
+}
+
+async function handleRegister(){
+   setLoading(true);
+  const req = await fetch(`https://lin.com.ng/h/?register&fullname=${fullname}&email=${email}&password=${password}`);
+const res = await req.json();
+if(res.status){
+  setRegDisplay(false);
+  onAuth(res.data.user_id);
+}else{
+   Alert.alert("Internal Error");
+  setLoading(false);
+}
 }
 
 
 
 function switchToSignIn(){
-
 setRegDisplay(false);
 setLoginDisplay(true);
-onAuth("id");
 }
 function switchToSignUp(){
 setLoginDisplay(false);
@@ -57,6 +66,7 @@ setRegDisplay(true);
           style={{flex:1,width:'100%',height:height,position:'absolute',marginTop:0}}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
+            <Loading display={loading} />
   <ScrollView contentContainerStyle={{
     flexGrow: 1,
     justifyContent: 'center',
