@@ -12,10 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    
+    "scheme": "myapp",
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "om.exmoj.hw",
+      "bundleIdentifier": "com.exmoj.hw",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["hw"]
       }
