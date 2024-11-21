@@ -1,7 +1,6 @@
 import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions,  Keyboard,KeyboardAvoidingView,Platform} from 'react-native';
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
-import {Loading} from '../res/loading';
 const { width, height } = Dimensions.get('window');
 
 
@@ -24,7 +23,7 @@ export function Search(){
     const [hasNext,setHasNext] = useState(true);
      const [keyboardHeight, setKeyboardHeight] = useState(0);
    const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
-
+    const [showSearch,setShowSearch] = useState(true);
 
      useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -105,9 +104,12 @@ function showModal(a){
      setModalContent(data[a])
     // alert(data[a].)
     setModalDisplay(true);
+      Keyboard.dismiss();
+      setShowSearch(false);
 }
     function hideModal(){
     setModalDisplay(false);
+     setShowSearch(true);
 }
 async function readNovel(novelId){
 setShow(true);
@@ -123,6 +125,7 @@ setCurrentNovel(chapters);
 }
 function hideReadModal(){
     setReadNovelModalDisplay(false);
+     setShowSearch(true);
 }
 function nextChapter(){
 setShow(true);
@@ -161,7 +164,7 @@ setHasNext(true)
 }
     return (
       <>
-       <KeyboardAvoidingView style={{height:screenHeight,paddingTop:(keyboardHeight/2)}}
+      {showSearch &&  <KeyboardAvoidingView style={{height:screenHeight,paddingTop:(keyboardHeight/2)}}
      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
    >
     
@@ -195,6 +198,7 @@ setHasNext(true)
          </View>
         </View>
    </KeyboardAvoidingView>
+   }
             {ModalDisplay && 
         <View style={styles.modal}>
             <View style={{height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
@@ -264,6 +268,7 @@ color:'#303030'
     width:"100%",
     height:"100%",
     backgroundColor:"#f9edfa",
+       
    },
    navigation:{height:"6%",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center",padding:5},
    navigationBtn:{paddingLeft:10,paddingRight:10,backgroundColor:'green',borderRadius:2,height:"100%",justifyContent:'center'}

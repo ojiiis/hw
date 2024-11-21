@@ -46,9 +46,10 @@ return nd.reduce((acc, current) => {
     const [NovelContent, setNovelContent] = useState('');
     const [currentNovelPage,setCurrentNovelPage] = useState(0)
     const [getItem,setGetItem] = useState(false);
-    const [canread,setcanread] = useState(true);
+    const [canread,setcanread] = useState(false);
     const [hasPrevious,setHasPrevious] = useState(false);
     const [hasNext,setHasNext] = useState(true);
+
   //  const [chap,setChapter] = useState(1);
   const handleScroll = (event) => {
     // Get the scroll position
@@ -75,6 +76,7 @@ function showModal(a){
      setModalContent(data[a])
     // alert(data[a].)
     setModalDisplay(true);
+  
 }
     function hideModal(){
     setModalDisplay(false);
@@ -129,6 +131,19 @@ setReadNovelModalDisplay(true);
 setShow(false);
 setHasNext(true)
 }
+
+async function makePayment(){
+  const data = new FormData();
+  data.append('amount',1000);
+  data.append('email','official.ojingirisamuel@gmail.com');
+   const req = await fetch(`https://api.paystack.co/transaction/initialize`,{
+    method:"POST",
+    headers:{
+     "Authorization":"Bearer sk_test_834380bd84dca053fcb797ae85b6b3b131f7157e"
+    },
+    body:data
+   });
+}
     return (
         // <Text>AA</Text>
         <>
@@ -171,7 +186,15 @@ setHasNext(true)
             </View>
             <View style={{height:'10%',width:'100%',alignItems:'center',justifyContent:'center'}}>
                 {canread && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
-                {!canread && <Pressable style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Buy Novel (N200)</Text></Pressable>}
+                {
+                !canread && 
+                <Pressable 
+                style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}
+                onPress={()=>makePayment()}
+                >
+                  <Text style={{color:'#303030'}}>Buy Novel (N200)</Text>
+                </Pressable>
+                }
             </View>
         </View>
       }
@@ -228,7 +251,7 @@ color:'#303030'
    modal:{
     width:"100%",
     height:"100%",
-    backgroundColor:"#f9edfa",
+    backgroundColor:"#f9edfa"
    },
    navigation:{height:"6%",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center",padding:5},
    navigationBtn:{paddingLeft:10,paddingRight:10,backgroundColor:'green',borderRadius:2,height:"100%",justifyContent:'center'}
