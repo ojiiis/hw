@@ -143,6 +143,8 @@ async function makePayment(){
     },
     body:data
    });
+   const res = await res.json();
+   console.log(res);
 }
     return (
         // <Text>AA</Text>
