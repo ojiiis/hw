@@ -201,7 +201,7 @@ setHasNext(true)
    }
             {ModalDisplay && 
         <View style={styles.modal}>
-            <View style={{height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
+            <View style={{backgroundColor:'#e443a3',height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
                 <Pressable onPress={()=>hideModal()}><Image source={require('../assets/back.png') } style={{width:30,height:20,resizeMode:'contain'}}/></Pressable>
             <Text>{ModalContent.title}</Text>
             </View>
@@ -221,7 +221,7 @@ setHasNext(true)
       {
         readNovelModalDisplay && 
         <View style={styles.modal}>
-            <View style={{height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
+            <View style={{backgroundColor:'#e443a3',height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
                 <Pressable onPress={()=>hideReadModal()}><Image source={require('../assets/back.png') } style={{width:30,height:20,resizeMode:'contain'}}/></Pressable>
             <Text>{ModalContent.title}</Text>
             </View>

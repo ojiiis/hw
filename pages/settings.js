@@ -2,14 +2,35 @@ import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions} 
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
+import * as fs from 'expo-file-system'
 const { width, height } = Dimensions.get('window');
 
 
 export function Settings(){
+   useEffect(()=>{
+ (
+   async ()=>{
+      const settings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
+      console.log(settings);
+   }
+ )()
+   },[]);
 return (
-    <>
-    <Text>Settings</Text>
-    </>
+     <View>
+       <View style={{backgroundColor:'#e443a3',padding:20,flexDirection:'row',justifyContent:'space-between'}}>
+       <Text style={{fontSize:20}}>Settings</Text>
+       </View>
+      <View style={{padding:20}}>
+           <Text style={{fontSize:20}}>Novel Reading Settings</Text>
+           <View style={{flexDirection:'row'}}>
+            <Text>Set font size</Text>
+            <View>
+                <Text>19</Text>
+            </View>
+           </View>
+      </View>
+    </View>
+    
 )
 }
 //style
