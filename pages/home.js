@@ -3,6 +3,7 @@ import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
 import { getUser } from '../res/func';
+import * as fs from 'expo-file-system'
 const { width, height } = Dimensions.get('window');
 
 
@@ -10,7 +11,22 @@ export function Home(){
        const [pageNo, setPageNo] = useState(1);
        const [show,setShow] = useState(true);
        const [data, setData] = useState([]);
+       const [readFontSize,setreadFontSize] = useState(19);
       useEffect(()=>{
+        (
+          async function(){
+            const getUserSettings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
+            if(getUserSettings == ""){
+            const  userSettings = {
+                "fontSize":19
+              };
+              await fs.writeAsStringAsync(JSON.stringify(userSettings));
+           setreadFontSize(userSettings.fontSize);
+            }else{
+            setreadFontSize(getUserSettings.fontSize);
+            }
+          }
+        )()
     async function getSession() {
 
           
@@ -59,6 +75,7 @@ return nd.reduce((acc, current) => {
         handleDeepLink({ url });
       }
     });
+    
      return () => {
    subscription.remove();
     }
@@ -72,7 +89,8 @@ return nd.reduce((acc, current) => {
     const [NovelContent, setNovelContent] = useState('');
     const [currentNovelPage,setCurrentNovelPage] = useState(0)
     const [getItem,setGetItem] = useState(false);
-    const [canread,setcanread] = useState(false);
+    const [canread,setcanread] = useState(true);
+
     const [hasPrevious,setHasPrevious] = useState(false);
     const [hasNext,setHasNext] = useState(true);
 
@@ -162,7 +180,7 @@ async function makePayment(novel_id){
   setShow(true);
   const user = await getUser();
   const data = new FormData();
-  data.append('amount',1000);
+  data.append('amount',20000);
   data.append('email',user.email);
   data.append('callback_url',`https://lin.com.ng/h?hook&user_id=${user.user_id}&novel_id=${novel_id}`);
   
@@ -231,7 +249,7 @@ Alert.alert("Unable to process your information!");
                 style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}
                 onPress={()=>makePayment(ModalContent.novel_id)}
                 >
-                  <Text style={{color:'#303030'}}>Buy Novel (N200)</Text>
+                  <Text style={{color:'#303030'}}>Buy Novel (₦200)</Text>
                 </Pressable>
                 }
             </View>
@@ -245,7 +263,7 @@ Alert.alert("Unable to process your information!");
             <Text>{ModalContent.title}</Text>
             </View>
             <ScrollView style={{width:'100%',height:'83%',paddingLeft:20,paddingRight:20}}>
-               <Text style={{fontSize:20}}>
+               <Text style={{fontSize:readFontSize}}>
                {NovelContent}
                </Text>
              
