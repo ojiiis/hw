@@ -43,7 +43,7 @@ async function handleRegister(){
 const res = await req.json();
 if(res.status){
   setRegDisplay(false);
-  onAuth(res.data.user_id);
+  onAuth(res.user_id);
 }else{
    Alert.alert("Internal Error");
   setLoading(false);
@@ -159,13 +159,13 @@ setRegDisplay(true);
             </View>
             <View style={styles.formGroup}>
               <Pressable title="Login" onPress={handleRegister} style={styles.btn}>
-                <Text style={{color:"white"}}>Register</Text>
+                <Text style={{color:"#303030"}}>Register</Text>
               </Pressable>
             </View>
             <View style={styles.formGroup}>
             <Text style={{marginBottom:5}}>Already have an account?</Text>
             <Pressable title="Login" onPress={switchToSignIn} style={styles.btn}>
-                <Text style={{color:"white"}}>Sign in</Text>
+                <Text style={{color:"#303030"}}>Sign in</Text>
             </Pressable>
             </View>
             </>

@@ -2,6 +2,7 @@ import {Alert,Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimens
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
+import { getUser } from '../res/func';
 const { width, height } = Dimensions.get('window');
 
 
@@ -30,7 +31,7 @@ return nd.reduce((acc, current) => {
     setShow(false);
     setGetItem(true);
    }catch(e){
-    //console.log(e)
+    console.log(e)
    }
     }
     getSession();
@@ -40,7 +41,8 @@ return nd.reduce((acc, current) => {
       const url = event.url;
 
       if (url) {
-        if (url === 'hw://home') {
+        
+        if (url.includes('hw://hook')) {
           Alert.alert('Welcome Back!', 'You were redirected back to the app.');
           // Navigate to the home screen or perform other actions
         }
@@ -158,10 +160,11 @@ setHasNext(true)
 
 async function makePayment(){
   setShow(true);
+  const userEmail = await getUser('email');
   const data = new FormData();
   data.append('amount',1000);
-  data.append('email','official.ojingirisamuel@gmail.com');
-  data.append('callback_url','hw://home');
+  data.append('email',userEmail);
+  data.append('callback_url','https://lin.com.ng/h?hook');
   
   
    const req = await fetch(`https://api.paystack.co/transaction/initialize`,{
@@ -172,10 +175,10 @@ async function makePayment(){
     body:data
    });
    const res = await req.json();
-   console.log(res);
+   
    
    if(Linking.canOpenURL(res.data.authorization_url)){
-    Linking.openURL(res.data.authorization_url)
+    await Linking.openURL(res.data.authorization_url)
    }else{
 Alert.alert("Unable to process your information!");
    }
