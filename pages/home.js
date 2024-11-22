@@ -158,13 +158,13 @@ setShow(false);
 setHasNext(true)
 }
 
-async function makePayment(){
+async function makePayment(novel_id){
   setShow(true);
-  const userEmail = await getUser('email');
+  const user = await getUser();
   const data = new FormData();
   data.append('amount',1000);
-  data.append('email',userEmail);
-  data.append('callback_url','https://lin.com.ng/h?hook');
+  data.append('email',user.email);
+  data.append('callback_url',`https://lin.com.ng/h?hook&user_id=${user.user_id}&novel_id=${novel_id}`);
   
   
    const req = await fetch(`https://api.paystack.co/transaction/initialize`,{
@@ -229,7 +229,7 @@ Alert.alert("Unable to process your information!");
                 !canread && 
                 <Pressable 
                 style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}
-                onPress={()=>makePayment()}
+                onPress={()=>makePayment(ModalContent.novel_id)}
                 >
                   <Text style={{color:'#303030'}}>Buy Novel (N200)</Text>
                 </Pressable>
@@ -245,7 +245,7 @@ Alert.alert("Unable to process your information!");
             <Text>{ModalContent.title}</Text>
             </View>
             <ScrollView style={{width:'100%',height:'83%',paddingLeft:20,paddingRight:20}}>
-               <Text>
+               <Text style={{fontSize:20}}>
                {NovelContent}
                </Text>
              
