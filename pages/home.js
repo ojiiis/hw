@@ -12,26 +12,7 @@ export function Home(){
       useEffect(()=>{
     async function getSession() {
 
-          const handleDeepLink = (event) => {
-      const url = event.url;
-      if (url) {
-        // Parse the URL and navigate to the correct screen
-        if (url === 'hw://home') {
-          // Navigate to the home screen or handle your deep link logic
-          Alert.alert('Deep Link', 'Welcome back to your app!');
-        }
-      }
-    };
-
-    Linking.addEventListener('url', handleDeepLink);
-
-    // Check if the app was opened by a deep link when the app starts
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleDeepLink({ url });
-      }
-    });
-
+          
    try{
     setGetItem(false);
     const getGata = await fetch('https://lin.com.ng/h/index.php?novels&page='+pageNo);
@@ -53,9 +34,31 @@ return nd.reduce((acc, current) => {
    }
     }
     getSession();
+    
+    
+    const handleDeepLink = (event) => {
+      const url = event.url;
+
+      if (url) {
+        if (url === 'hw://home') {
+          Alert.alert('Welcome Back!', 'You were redirected back to the app.');
+          // Navigate to the home screen or perform other actions
+        }
+      }
+    };
+    
+    
+    // Listen for deep links
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    // Check if the app was launched from a deep link
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    });
      return () => {
-      Linking.removeEventListener('url', handleDeepLink);
-     
+   subscription.remove();
     }
   },[pageNo]);
     const scrollViewRef = useRef();
