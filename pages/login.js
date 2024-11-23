@@ -39,17 +39,20 @@ onAuth(res.data.user_id);
 
 async function handleRegister(){
    setLoading(true);
-   const emailRegex = /[w]+@[w]+.[w+]/
+ //  const emailRegex = /\w+@[w]+.[w+]/
    if(fullname.length < 1 || email.length < 1 || password.length < 1){
     Alert.alert("You must fill all feilds.");
     setLoading(false);
     return;
    }
- if(!emailRegex.test(email)){
+
+   /*
+   if(!emailRegex.test(email)){
     Alert.alert("You must enter a valid email address.");
     setLoading(false);
     return;
    }
+   */
    if(!/[ ]/.test(fullname)){
     Alert.alert("You must enter a valid fullname address.");
     setLoading(false);
