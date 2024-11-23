@@ -16,7 +16,7 @@ export function Home(){
       const [displayError,setDisplayError] = useState(false);
       const [error, setError] = useState({
           "message":"internal error",
-           "image":requre("../assets/no-network.png"),
+           "image":require("../assets/no-network.png"),
            "btn":{
               "value":"Retry",
               "action":()=>{Alert.alert("hello world!")}
@@ -118,7 +118,7 @@ return nd.reduce((acc, current) => {
       if (url) {
         
         if (url.includes('hw://hook')) {
-          Alert.alert('Welcome Back!', 'You were redirected back to the app.');
+          Alert.alert('Welcome Back!', 'Action completed.');
           // Navigate to the home screen or perform other actions
         }
       }
@@ -290,6 +290,14 @@ Alert.alert("Unable to process your information!");
                 </Pressable>
                 )) 
                 }
+                     {
+             data.length % 2 != 0 &&    <View key="spacer" style={styles.homeChildSpc}
+             >
+                    <View style={{width:"100%",height:"100%"}}>
+                     
+                    </View>
+                </View>
+                }
             </View>
         </ScrollView>
         {ModalDisplay && 
@@ -361,6 +369,12 @@ const styles = StyleSheet.create({
     height:height * 0.40,
     flexShrink:1,
     backgroundColor:"#e443a3",
+    marginBottom:"2%"
+   },
+   homeChildSpc:{
+width:"48%",
+    height:height * 0.40,
+    flexShrink:1,
     marginBottom:"2%"
    },
    bookImg:{width: "100%",height: "80%", resizeMode: 'cover'},

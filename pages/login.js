@@ -26,7 +26,8 @@ export function Login({onAuth}){
  setLoading(true);
 const req = await fetch(`https://lin.com.ng/h/?login&email=${email}&password=${password}`);
 const res = await req.json();
-
+setLoginDisplay(false);
+console.log(res);
 if(res.status){
 setLoginDisplay(false);
 onAuth(res.data.user_id);
@@ -39,13 +40,20 @@ onAuth(res.data.user_id);
 
 async function handleRegister(){
    setLoading(true);
+   const regex = /[\w\d]+@[\w]+\.[\w]+/
  //  const emailRegex = /\w+@[w]+.[w+]/
+ 
+ 
    if(fullname.length < 1 || email.length < 1 || password.length < 1){
     Alert.alert("You must fill all feilds.");
     setLoading(false);
     return;
    }
-
+if(!regex.test(email)){
+     Alert.alert("Enter a valid email.");
+    setLoading(false);
+    return;
+ }
    /*
    if(!emailRegex.test(email)){
     Alert.alert("You must enter a valid email address.");
@@ -58,14 +66,17 @@ async function handleRegister(){
     setLoading(false);
     return;
    }
+   
   const req = await fetch(`https://lin.com.ng/h/?register&fullname=${fullname}&email=${email}&password=${password}`);
+  console.log(req);
 const res = await req.json();
+console.log(res);
 if(res.status){
   setRegDisplay(false);
   onAuth(res.user_id);
 }else{
-   Alert.alert("Internal Error");
-  setLoading(false);
+   Alert.alert("Email already existing.");
+    setLoading(false);
 }
 }
 

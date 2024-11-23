@@ -3,11 +3,13 @@ import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
 import { getUser } from '../res/func';
+import {Errors} from '../res/errors';
+
 const { width, height } = Dimensions.get('window');
 
 
 export function Profile({logout}){
-   const [user,setUser]= useState({});
+   const [user,setUser]= useState([]);
      const [keyboardHeight, setKeyboardHeight] = useState(0);
    const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
    const [show,setShow] = useState(true);
@@ -16,30 +18,65 @@ export function Profile({logout}){
       const [displayError,setDisplayError] = useState(false);
       const [error, setError] = useState({
           "message":"internal error",
+          "image":require('../assets/no-network.png'),
           "btn":{
               "value":"Retry",
               "action":()=>{Alert.alert("hello world!")}
               
           }
       });
+      
    useEffect(()=>{
            (
             async ()=>{
           const getuser = await getUser();
+          
            setUser((old)=>{
-            return {...old,...getuser}
+            
+   
+            return getuser;
            });
-
+           
        // const url = `https://lin.com.ng/h/index.php?novels&page=1&user_id=${getuser?.user_id}`;
-        const url = `https://lin.com.ng/h/index.php?users_novel=${getuser.user_id}`;
+       async function  fetchData(){
+            try{
+                const url = `https://lin.com.ng/h/index.php?users_novel=${getuser?.user_id}`;
+                console.log(url);
         const getMyNovel = await fetch(url);
         const gdata = await getMyNovel.json();
+        
         if(gdata.status){
-         setData(gdata.data);
+         setData((old)=>{
+             return gdata.data;
+         });
+         
         }
-       
+        //setUser(gdata,"gdata");
+        
         setShow(false);
-
+        console.log(data,'after request.');
+            }catch(e){
+               setShow(false);
+       const er ={
+             "message":e.message,
+          "btn":{
+              "value":"Retry",
+              "action":()=>{
+                  setDisplayError(false);
+                  setShow(true);
+                  fetchData();
+              }
+              
+          }
+       }
+       setError((old)=>{
+           return {...old,...er}
+       });
+      setDisplayError(true);
+     
+            }
+        }
+        fetchData();
  var userSettings;
            
             const getUserSettings = await fs.getInfoAsync(`${fs.documentDirectory}settings`);
@@ -53,7 +90,7 @@ export function Profile({logout}){
               
               await fs.writeAsStringAsync(`${fs.documentDirectory}settings`,usd);
            setreadFontSize(userSettings.fontSize);
-
+   
             }else{
                userSettingsGet = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
                userSettings = JSON.parse(userSettingsGet);
@@ -86,7 +123,7 @@ export function Profile({logout}){
     };
 
 
-   },[keyboardHeight,screenHeight]);
+   },[keyboardHeight,screenHeight,data]);
     const [ModalDisplay,setModalDisplay] = useState(false);
     const [ModalContent,setModalContent] = useState('');
     const [readNovelModalDisplay,setReadNovelModalDisplay]=useState(false);
@@ -106,7 +143,7 @@ export function Profile({logout}){
 
 
    function showModal(a){
-    
+    console.log(data,'from modal');
   Keyboard.dismiss();
    setModalContent(data[a])
     // alert(data[a].)
@@ -169,6 +206,11 @@ setHasNext(true)
 
 return (
   <>
+          {displayError && <Errors 
+        message={error.message}
+        btn={error.btn}
+        image={error.image}
+        />}
               {ModalDisplay && 
         <View style={styles.modal}>
             <View style={{backgroundColor:'#e443a3',height:'7%',width:'100%',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingLeft:20,paddingRight:20}}>
@@ -184,15 +226,7 @@ return (
             </View>
             <View style={{height:'10%',width:'100%',alignItems:'center',justifyContent:'center'}}>
                 {ModalContent.can_read && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
-                {
-                !ModalContent.can_read && 
-                <Pressable 
-                style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}
-                onPress={()=>makePayment(ModalContent.novel_id)}
-                >
-                  <Text style={{color:'#303030'}}>Buy Novel (₦200)</Text>
-                </Pressable>
-                }
+                
             </View>
         </View>
       }
@@ -250,8 +284,8 @@ return (
            
         
                   {
-                data.map((book,i)=>(
-                <Pressable key={book.title} style={styles.homeChild} onPress={()=>showModal(i)}>
+             data.length > 0 &&   data.map((book,i)=>(
+                <Pressable key={book.id} style={styles.homeChild} onPress={()=>showModal(i)}>
                     <View style={{width:"100%",height:"100%"}}>
                         <Img
                         url={'https://lin.com.ng/h/'+book.cover}
@@ -262,6 +296,15 @@ return (
                     </View>
                 </Pressable>
                 )) 
+                }
+                
+                                  {
+             data.length % 2 != 0 &&    <View key="spacer" style={styles.homeChildSpc}
+             >
+                    <View style={{width:"100%",height:"100%"}}>
+                     
+                    </View>
+                </View>
                 }
             </View>
        </ScrollView>
@@ -289,6 +332,12 @@ const styles = StyleSheet.create({
     height:height * 0.40,
     flexShrink:1,
     backgroundColor:"#e443a3",
+    marginBottom:"2%"
+   },
+   homeChildSpc:{
+width:"48%",
+    height:height * 0.40,
+    flexShrink:1,
     marginBottom:"2%"
    },
    bookImg:{width: "100%",height: "80%", resizeMode: 'cover'},

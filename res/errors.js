@@ -3,17 +3,14 @@ const { width, height } = Dimensions.get('window');
 export function Errors({image,btn,message}){
     
       return (
-    
-        
-            
-            <View style={{width:'100%',height:'100%',backgroundColor:'#f9edfa',justifyContent:'center',alignItems:'center'}}>
+     <View style={{width:'100%',height:'100%',backgroundColor:'#f9edfa',justifyContent:'center',alignItems:'center'}}>
               
               <View style={{width:'100%',alignItems:'center'}}>
               <Text style={{fontSize:25}}>{message}</Text>
                  {
                  image && image !== "undefined"   &&  <Image
                  source={image}
-                 style={{width: 30,height: 30, resizeMode: 'cover',marginTop:20}}
+                 style={{width: 150,height: 130, resizeMode: 'cover',marginTop:20}}
                 />
                  }
                 {

@@ -241,6 +241,15 @@ setHasNext(true)
                 </Pressable>
                 )) 
                 }
+                
+                     {
+             data.length % 2 != 0 &&    <View key="spacer" style={styles.homeChildSpc}
+             >
+                    <View style={{width:"100%",height:"100%"}}>
+                     
+                    </View>
+                </View>
+                }
            </ScrollView>
          </View>
         </View>
@@ -303,6 +312,12 @@ const styles = StyleSheet.create({
     height:height * 0.40,
     flexShrink:1,
     backgroundColor:"#e443a3",
+    marginBottom:"2%"
+   },
+   homeChildSpc:{
+width:"48%",
+    height:height * 0.40,
+    flexShrink:1,
     marginBottom:"2%"
    },
    bookImg:{width: "100%",height: "80%", resizeMode: 'cover'},
