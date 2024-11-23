@@ -16,7 +16,8 @@ export function Home(){
       const [displayError,setDisplayError] = useState(false);
       const [error, setError] = useState({
           "message":"internal error",
-          "btn":{
+           "image":requre("../assets/no-network.png"),
+           "btn":{
               "value":"Retry",
               "action":()=>{Alert.alert("hello world!")}
               
