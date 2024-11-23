@@ -1,9 +1,12 @@
 import {Style,View,Text,ScrollView, Pressable, TouchableOpacity} from 'react-native'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 export function ListOptions({currentValue,options ={},onSelect,style}){
     const [showOption,setShowOption] = useState(false);
     const [value,setValue] = useState(currentValue);
+    useEffect(()=>{
+setValue(currentValue);
+    },[currentValue]);
     function handleSelection(data){
 setValue(data.value);
 onSelect(data.value);

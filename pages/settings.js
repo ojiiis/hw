@@ -9,8 +9,7 @@ const { width, height } = Dimensions.get('window');
 
 export function Settings(){
    const [oldValue,setOldValue]= useState(19); 
-  const [value,setValue]= useState(oldValue);
-  
+  //const [value,setValue]= useState(oldValue);
    useEffect(()=>{
  (
    async ()=>{
@@ -19,9 +18,11 @@ export function Settings(){
       setOldValue(JSON.parse(settings).fontSize)
    }
  )()
-   },[]);
+   },[oldValue]);
+    
+   
     const setNewSelected = async (x)=>{
-      setValue(x);
+      setOldValue(x);
       //console.log(x);
        const settings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
        const old = JSON.parse(settings);
@@ -37,11 +38,11 @@ return (
        </View>
       <View style={{padding:20}}>
            <Text style={{fontSize:20}}>Novel Reading Settings</Text>
-           <View style={{flexDirection:'row'}}>
-            <Text>Set font size</Text>
+           <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
+            <Text style={{fontWeight:'bold'}}>Set font size</Text>
             <View>
                 <ListOptions 
-            currentValue={value}
+            currentValue={oldValue}
             onSelect={setNewSelected}
             options={
                 [
@@ -54,7 +55,7 @@ return (
             />
             </View>
            </View>
-           <Text style={{fontSize:value}}>This is how text will look like while reading novel.</Text>
+           <Text style={{fontSize:oldValue,backgroundColor:'#ddd',padding:20,marginTop:10}}>This is how text will look like while reading novel.</Text>
       </View>
     </View>
     
