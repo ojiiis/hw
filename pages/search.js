@@ -2,6 +2,8 @@ import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions, 
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 const { width, height } = Dimensions.get('window');
+import * as fs from 'expo-file-system'
+import {Errors} from '../res/errors';
 
 
 export function Search(){
@@ -24,7 +26,16 @@ export function Search(){
      const [keyboardHeight, setKeyboardHeight] = useState(0);
    const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
     const [showSearch,setShowSearch] = useState(true);
-
+const [user,setUser] = useState({});
+const [displayError,setDisplayError] = useState(false);
+      const [error, setError] = useState({
+          "message":"internal error",
+          "btn":{
+              "value":"Retry",
+              "action":()=>{Alert.alert("hello world!")}
+              
+          }
+      });
      useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
@@ -41,6 +52,15 @@ export function Search(){
         setScreenHeight(Dimensions.get('window').height);
       }
     );
+    (
+    async ()=>{
+        const getuser = await fs.readAsStringAsync(`${fs.documentDirectory}user`);
+            setUser((old)=>{
+                let userN = JSON.parse(getuser)
+                return {...old,...userN}
+            });
+    }
+    )();
 
     return () => {
       keyboardDidShowListener.remove();
@@ -72,9 +92,30 @@ export function Search(){
     }
   }
    async function searchFunc(updatedKey){
-        const getSearch = await fetch('https://lin.com.ng/h/index.php?search='+updatedKey);
+       try{
+        const getSearch = await fetch(`https://lin.com.ng/h/index.php?search=${updatedKey}&user_id=${user?.user_id}`);
         const search = await getSearch.json();
         setData(search);
+       }catch(e){
+           setShow(false);
+       const er ={
+             "message":e.message,
+          "btn":{
+              "value":"Retry",
+              "action":()=>{
+                  setDisplayError(false);
+                  setShow(true);
+                  searchFunc(updatedKey);
+              }
+              
+          }
+       }
+       setError((old)=>{
+           return {...old,...er}
+       });
+      setDisplayError(true);
+       }
+       
     }
 
 
@@ -164,6 +205,11 @@ setHasNext(true)
 }
     return (
       <>
+      {displayError && <Errors 
+        message={error.message}
+        btn={error.btn}
+        image={error.image}
+        />}
       {showSearch &&  <KeyboardAvoidingView style={{height:screenHeight,paddingTop:(keyboardHeight/2)}}
      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
    >
@@ -213,8 +259,8 @@ setHasNext(true)
               
             </View>
             <View style={{height:'10%',width:'100%',alignItems:'center',justifyContent:'center'}}>
-                {canread && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
-                {!canread && <Pressable style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Buy Novel (N200)</Text></Pressable>}
+                {ModalContent.can_read && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
+                {!ModalContent.can_read && <Pressable style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Buy Novel (N200)</Text></Pressable>}
             </View>
         </View>
       }

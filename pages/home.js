@@ -2,6 +2,7 @@ import {Alert,Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimens
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
+import {Errors} from '../res/errors';
 import { getUser } from '../res/func';
 import * as fs from 'expo-file-system'
 const { width, height } = Dimensions.get('window');
@@ -12,28 +13,55 @@ export function Home(){
        const [show,setShow] = useState(true);
        const [data, setData] = useState([]);
        const [readFontSize,setreadFontSize] = useState(19);
+       const [user,setUser] = useState({});
+      const [displayError,setDisplayError] = useState(false);
+      const [error, setError] = useState({
+          "message":"internal error",
+          "btn":{
+              "value":"Retry",
+              "action":()=>{Alert.alert("hello world!")}
+              
+          }
+      });
       useEffect(()=>{
         (
-          async function(){
-            const getUserSettings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
-            if(getUserSettings == ""){
-            const  userSettings = {
+          async ()=>{
+              
+            var userSettings;
+            const getuser = await fs.readAsStringAsync(`${fs.documentDirectory}user`);
+            
+            setUser((old)=>{
+                let userN = JSON.parse(getuser);
+               return {...old,...userN}
+            });
+            
+              const getUserSettings = await fs.getInfoAsync(`${fs.documentDirectory}settings`);
+              
+            
+            if(!getUserSettings.exists){
+              userSettings = {
                 "fontSize":19
               };
-              await fs.writeAsStringAsync(JSON.stringify(userSettings));
+              var usd = JSON.stringify(userSettings);
+              
+              await fs.writeAsStringAsync(`${fs.documentDirectory}settings`,usd);
            setreadFontSize(userSettings.fontSize);
-            }else{
-            setreadFontSize(getUserSettings.fontSize);
-            }
-          }
-        )()
-    async function getSession() {
 
-          
-   try{
+            }else{
+               userSettings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
+            setreadFontSize(userSettings.fontSize);
+            }
+            
+             
+   
+           const getNovel = async () =>{
+                 try{
+                  
     setGetItem(false);
-    const getGata = await fetch('https://lin.com.ng/h/index.php?novels&page='+pageNo);
-    const homeData = await getGata.json();
+    const getData = await fetch(`https://lin.com.ng/h/index.php?novels&page=${pageNo}&user_id=${user}`);
+
+    const homeData = await getData.json();
+console.log(homeData)
     setData(data => {
       var nd =    data.concat(homeData)
 return nd.reduce((acc, current) => {
@@ -47,10 +75,40 @@ return nd.reduce((acc, current) => {
     setShow(false);
     setGetItem(true);
    }catch(e){
-    console.log(e)
+       setShow(false);
+       const er ={
+             "message":e.message,
+          "btn":{
+              "value":"Retry",
+              "action":()=>{
+                  setDisplayError(false);
+                  setShow(true);
+                  getNovel();
+              }
+              
+          }
+       }
+       setError((old)=>{
+           return {...old,...er}
+       });
+      setDisplayError(true);
+    
    }
-    }
-    getSession();
+   
+           }
+           
+         getNovel();
+         
+         
+   
+          }
+        )();
+  
+  
+  
+  
+  
+        
     
     
     const handleDeepLink = (event) => {
@@ -89,7 +147,7 @@ return nd.reduce((acc, current) => {
     const [NovelContent, setNovelContent] = useState('');
     const [currentNovelPage,setCurrentNovelPage] = useState(0)
     const [getItem,setGetItem] = useState(false);
-    const [canread,setcanread] = useState(true);
+    
 
     const [hasPrevious,setHasPrevious] = useState(false);
     const [hasNext,setHasNext] = useState(true);
@@ -204,6 +262,11 @@ Alert.alert("Unable to process your information!");
     return (
         // <Text>AA</Text>
         <>
+        {displayError && <Errors 
+        message={error.message}
+        btn={error.btn}
+        image={error.image}
+        />}
         <Loading display={show} />
         <ScrollView 
         ref={scrollViewRef} 
@@ -242,9 +305,9 @@ Alert.alert("Unable to process your information!");
               
             </View>
             <View style={{height:'10%',width:'100%',alignItems:'center',justifyContent:'center'}}>
-                {canread && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
+                {ModalContent.can_read && <Pressable onPress={()=>readNovel(ModalContent.novel_id)} style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}><Text style={{color:'#303030'}}>Read Novel</Text></Pressable>}
                 {
-                !canread && 
+                !ModalContent.can_read && 
                 <Pressable 
                 style={{width:'80%',backgroundColor:'#e443a3',padding:10,borderRadius:10,alignItems:'center',justifyContent:'center'}}
                 onPress={()=>makePayment(ModalContent.novel_id)}
