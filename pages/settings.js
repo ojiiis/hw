@@ -2,19 +2,34 @@ import {Pressable, StyleSheet,Text,TextInput, View,Image,ScrollView,Dimensions} 
 import {useState,useRef,useEffect} from 'react';
 import {Img} from '../res/img';
 import {Loading} from '../res/loading';
+import { ListOptions } from '../res/listoption';
 import * as fs from 'expo-file-system'
 const { width, height } = Dimensions.get('window');
 
 
 export function Settings(){
+   const [oldValue,setOldValue]= useState(19); 
+  const [value,setValue]= useState(oldValue);
+  
    useEffect(()=>{
  (
    async ()=>{
       const settings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
-      console.log(settings);
+      //console.log(JSON.parse(settings).fontSize);
+      setOldValue(JSON.parse(settings).fontSize)
    }
  )()
    },[]);
+    const setNewSelected = async (x)=>{
+      setValue(x);
+      //console.log(x);
+       const settings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
+       const old = JSON.parse(settings);
+       const setNew = {"fontSize":x};
+       const newSettings = {...old,...setNew}
+       fs.writeAsStringAsync(`${fs.documentDirectory}settings`,JSON.stringify(newSettings));
+       //console.log(settings);
+    }
 return (
      <View>
        <View style={{backgroundColor:'#e443a3',padding:20,flexDirection:'row',justifyContent:'space-between'}}>
@@ -25,9 +40,21 @@ return (
            <View style={{flexDirection:'row'}}>
             <Text>Set font size</Text>
             <View>
-                <Text>19</Text>
+                <ListOptions 
+            currentValue={value}
+            onSelect={setNewSelected}
+            options={
+                [
+                    {"option":"19 Px","value":19},
+                    {"option":"30 Px","value":30},
+                    {"option":"40 Px","value":40},
+                    {"option":"50 Px","value":50}
+                ]
+            }
+            />
             </View>
            </View>
+           <Text style={{fontSize:value}}>This is how text will look like while reading novel.</Text>
       </View>
     </View>
     

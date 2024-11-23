@@ -93,6 +93,7 @@ const [displayError,setDisplayError] = useState(false);
   }
    async function searchFunc(updatedKey){
        try{
+        
         const getSearch = await fetch(`https://lin.com.ng/h/index.php?search=${updatedKey}&user_id=${user?.user_id}`);
         const search = await getSearch.json();
         setData(search);

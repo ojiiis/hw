@@ -13,7 +13,6 @@ export function Home(){
        const [show,setShow] = useState(true);
        const [data, setData] = useState([]);
        const [readFontSize,setreadFontSize] = useState(19);
-       const [user,setUser] = useState({});
       const [displayError,setDisplayError] = useState(false);
       const [error, setError] = useState({
           "message":"internal error",
@@ -28,14 +27,8 @@ export function Home(){
           async ()=>{
               
             var userSettings;
-            const getuser = await fs.readAsStringAsync(`${fs.documentDirectory}user`);
-            
-            setUser((old)=>{
-                let userN = JSON.parse(getuser);
-               return {...old,...userN}
-            });
-            
-              const getUserSettings = await fs.getInfoAsync(`${fs.documentDirectory}settings`);
+           
+            const getUserSettings = await fs.getInfoAsync(`${fs.documentDirectory}settings`);
               
             
             if(!getUserSettings.exists){
@@ -48,8 +41,9 @@ export function Home(){
            setreadFontSize(userSettings.fontSize);
 
             }else{
-               userSettings = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
-            setreadFontSize(userSettings.fontSize);
+               userSettingsGet = await fs.readAsStringAsync(`${fs.documentDirectory}settings`);
+               userSettings = JSON.parse(userSettingsGet);
+               setreadFontSize(userSettings.fontSize);
             }
             
              
@@ -58,10 +52,15 @@ export function Home(){
                  try{
                   
     setGetItem(false);
-    const getData = await fetch(`https://lin.com.ng/h/index.php?novels&page=${pageNo}&user_id=${user}`);
+     const getuser = await fs.readAsStringAsync(`${fs.documentDirectory}user`);
+     const thisUser = JSON.parse(getuser);
+    const url = `https://lin.com.ng/h/index.php?novels&page=${pageNo}&user_id=${thisUser?.user_id}`;
+  //  console.log(url)
+    
+    const getData = await fetch(url);
 
     const homeData = await getData.json();
-console.log(homeData)
+//console.log(homeData)
     setData(data => {
       var nd =    data.concat(homeData)
 return nd.reduce((acc, current) => {
@@ -74,6 +73,7 @@ return nd.reduce((acc, current) => {
     });
     setShow(false);
     setGetItem(true);
+    //console.log(data);
    }catch(e){
        setShow(false);
        const er ={
@@ -240,7 +240,7 @@ async function makePayment(novel_id){
   const data = new FormData();
   data.append('amount',20000);
   data.append('email',user.email);
-  data.append('callback_url',`https://lin.com.ng/h?hook&user_id=${user.user_id}&novel_id=${novel_id}`);
+  data.append('callback_url',`https://lin.com.ng/h?hook&user_id=${user?.user_id}&novel_id=${novel_id}`);
   
   
    const req = await fetch(`https://api.paystack.co/transaction/initialize`,{
