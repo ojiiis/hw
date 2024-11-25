@@ -31,6 +31,7 @@ console.log(res);
 if(res.status){
 setLoginDisplay(false);
 onAuth(res.data.user_id);
+   setLoading(false);
 }else{
    Alert.alert("Invalid Login");
   setLoading(false);
